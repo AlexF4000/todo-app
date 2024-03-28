@@ -1,6 +1,4 @@
-// src/App.tsx
-import React, { useState } from "react";
-import { Task } from "./models/Task";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   List,
@@ -12,34 +10,45 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddBoxIcon from "@mui/icons-material/AddBox";
+import { Task } from "./Task";
+import { AddTask, Delete } from "@mui/icons-material";
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTaskTitle, setNewTaskTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
 
-  const addTask = (title: string) => {
+  // Load tasks from session storage when the component mounts
+  useEffect(() => {
+    const storedTasks = sessionStorage.getItem("tasks");
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  // Save tasks to session storage whenever tasks are updated
+  useEffect(() => {
+    sessionStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  const addTask = (): void => {
     const newTask: Task = {
-      id: Math.random().toString(36).substring(2, 9),
       title,
       completed: false,
-      createdAt: new Date(),
     };
     setTasks([...tasks, newTask]);
-    setNewTaskTitle("");
+    setTitle(""); // Clear the input after adding a task
   };
 
-  const toggleTaskCompletion = (id: string) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+  const toggleTaskCompletion = (index: number) => {
+    const newTasks = [...tasks];
+    newTasks[index].completed = !newTasks[index].completed;
+    setTasks(newTasks);
   };
 
-  const deleteTask = (id: string) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  const deleteTask = (index: number) => {
+    const newTasks = [...tasks];
+    newTasks.splice(index, 1);
+    setTasks(newTasks);
   };
 
   return (
@@ -50,35 +59,35 @@ const App: React.FC = () => {
       <Paper style={{ padding: 16 }}>
         <TextField
           fullWidth
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           onKeyPress={(e) => {
-            if (e.key === "Enter" && newTaskTitle) {
-              addTask(newTaskTitle);
+            if (e.key === "Enter") {
+              addTask();
             }
           }}
           placeholder="Add Task"
           InputProps={{
             endAdornment: (
-              <IconButton onClick={() => newTaskTitle && addTask(newTaskTitle)}>
-                <AddBoxIcon />
+              <IconButton onClick={addTask}>
+                <AddTask />
               </IconButton>
             ),
           }}
         />
         <List>
-          {tasks.map((task) => (
+          {tasks.map((task, index) => (
             <ListItem
-              key={task.id}
+              key={index}
               secondaryAction={
-                <IconButton edge="end" onClick={() => deleteTask(task.id)}>
-                  <DeleteIcon />
+                <IconButton edge="end" onClick={() => deleteTask(index)}>
+                  <Delete />
                 </IconButton>
               }
             >
               <Checkbox
                 checked={task.completed}
-                onChange={() => toggleTaskCompletion(task.id)}
+                onChange={() => toggleTaskCompletion(index)}
               />
               <ListItemText primary={task.title} />
             </ListItem>
