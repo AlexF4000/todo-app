@@ -18,7 +18,9 @@ type TaskContextType = {
 };
 
 // Initialize the context with a default value
-const TaskContext = createContext<TaskContextType | undefined>(undefined);
+export const TaskContext = createContext<TaskContextType | undefined>(
+  undefined
+);
 
 // Create a provider component
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({

@@ -34,7 +34,7 @@ const App: React.FC = () => {
           placeholder="Add Task"
           InputProps={{
             endAdornment: (
-              <IconButton onClick={addTask}>
+              <IconButton data-testid="add-test-button" onClick={addTask}>
                 <AddTask />
               </IconButton>
             ),

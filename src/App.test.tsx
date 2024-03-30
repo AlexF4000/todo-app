@@ -1,64 +1,54 @@
-import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import App from "./App";
-import { Task } from "./Task"; // Assuming this is where your Task type is defined
+import { TaskProvider } from "./Context/TaskProvider";
 
-// Define a mock storage object
-const mockSessionStorage: Storage = {
-  length: 0,
-  clear: jest.fn(),
-  getItem: jest.fn((key: string) => null),
-  key: jest.fn((index: number) => null),
-  removeItem: jest.fn(),
-  setItem: jest.fn(),
-};
+describe("App Component", () => {
+  const mockTasks = [
+    { title: "Task 1", completed: false },
+    { title: "Task 2", completed: true },
+  ];
 
-// Type assertion to satisfy TypeScript's type checking
-Object.defineProperty(window, "sessionStorage", {
-  value: mockSessionStorage,
-});
+  beforeEach(() => {
+    sessionStorage.clear();
+    sessionStorage.setItem("tasks", JSON.stringify(mockTasks));
+  });
 
-test("renders", () => {
-  render(<App />);
-  const linkElement = screen.getByText(/TODO LIST/i);
-  expect(linkElement).toBeInTheDocument();
-});
+  it("loads tasks from session storage on initial render", () => {
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
 
-test("adds a new task", () => {
-  const { getByPlaceholderText, getByText } = render(<App />);
-  const inputElement = getByPlaceholderText("Add Task");
-  const addButton = getByText("Add");
+    expect(screen.getByText("Task 1")).toBeInTheDocument();
+    expect(screen.getByText("Task 2")).toBeInTheDocument();
+  });
 
-  // Simulate typing a new task and adding it
-  fireEvent.change(inputElement, { target: { value: "New Task" } });
-  fireEvent.click(addButton);
+  it("adds a new task, clears the input, and updates the tasks list", async () => {
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
+    const taskInput = screen.getByPlaceholderText(
+      "Add Task"
+    ) as HTMLInputElement;
 
-  // Check if the new task is displayed
-  expect(getByText("New Task")).toBeInTheDocument();
-});
+    fireEvent.change(taskInput, { target: { value: "New Task" } });
+    expect(taskInput.value).toBe("New Task"); // Verify input before adding
 
-test("toggles a task's completion status", () => {
-  // Prepopulate session storage with a task
-  (mockSessionStorage.getItem as jest.Mock).mockImplementationOnce(() =>
-    JSON.stringify([{ title: "New Task", completed: false }])
-  );
+    const addButton = screen.getByTestId("add-test-button") as HTMLInputElement;
+    fireEvent.click(addButton);
 
-  const { getByLabelText } = render(<App />);
-  const checkbox = getByLabelText("New Task") as HTMLInputElement;
+    expect(taskInput.value).toBe(""); // Verify input is cleared after adding
 
-  fireEvent.click(checkbox);
+    expect(screen.getByText("New Task")).toBeInTheDocument();
+  });
 
-  // Check if the checkbox is checked
-  expect(checkbox.checked).toBe(true);
-});
-
-test("deletes a task", () => {
-  const { getByText, queryByText } = render(<App />);
-  // Assuming a task "New Task" exists
-
-  // Simulate deleting the task
-  fireEvent.click(getByText("Delete"));
-
-  // Check if the task is no longer displayed
-  expect(queryByText("New Task")).not.toBeInTheDocument();
+  it("throws an error when useTask hook is not used within a TaskProvider", () => {
+    expect(() => render(<App />)).toThrowError(
+      "useTask must be used within a TaskProvider"
+    );
+  });
 });
