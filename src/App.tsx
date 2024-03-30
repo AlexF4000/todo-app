@@ -18,7 +18,11 @@ const App: React.FC = () => {
 
   return (
     <Container maxWidth="sm">
-      <Typography variant="h2" sx={{ textAlign: "center", my: 4 }}>
+      <Typography
+        data-testid="todo-title"
+        variant="h2"
+        sx={{ textAlign: "center", my: 4 }}
+      >
         TODO LIST
       </Typography>
       <Paper style={{ padding: 16 }}>
