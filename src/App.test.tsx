@@ -36,14 +36,39 @@ describe("App Component", () => {
     ) as HTMLInputElement;
 
     fireEvent.change(taskInput, { target: { value: "New Task" } });
-    expect(taskInput.value).toBe("New Task"); // Verify input before adding
+    expect(taskInput.value).toBe("New Task");
 
     const addButton = screen.getByTestId("add-test-button") as HTMLInputElement;
+
     fireEvent.click(addButton);
-
     expect(taskInput.value).toBe(""); // Verify input is cleared after adding
-
     expect(screen.getByText("New Task")).toBeInTheDocument();
+  });
+
+  it("complete a task when the add button is clicked", async () => {
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
+
+    const checkbox = screen.getAllByRole("checkbox")[0];
+
+    expect(checkbox).not.toBeFalsy();
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeTruthy();
+  });
+
+  it("'deletes a task and updates the tasks list'", async () => {
+    render(
+      <TaskProvider>
+        <App />
+      </TaskProvider>
+    );
+
+    const deleteButtons = screen.getAllByTestId("delete-test-button");
+    fireEvent.click(deleteButtons[0]);
+    expect(screen.queryByText("Task 1")).not.toBeInTheDocument();
   });
 
   it("throws an error when useTask hook is not used within a TaskProvider", () => {
