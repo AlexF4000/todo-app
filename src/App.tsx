@@ -45,7 +45,11 @@ const App: React.FC = () => {
             <ListItem
               key={index}
               secondaryAction={
-                <IconButton edge="end" onClick={() => deleteTask(index)}>
+                <IconButton
+                  data-testid="delete-test-button"
+                  edge="end"
+                  onClick={() => deleteTask(index)}
+                >
                   <Delete />
                 </IconButton>
               }
