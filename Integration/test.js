@@ -30,9 +30,9 @@ describe("Google Search", () => {
     await driver.wait(until.elementIsVisible(taskInput), 10000);
     //await taskInput.sendKeys(newTask);
 
-    // const newTask = "Finish selenium integration test";
-    // await taskInput.sendKeys(newTask);
-    // await addTaskButton.click();
+    //const newTask = "Finish selenium integration test";
+    //await taskInput.sendKeys(newTask);
+    //await addTaskButton.click();
 
     const addTaskButton = await driver.wait(
       until.elementLocated(By.css('[data-testid="add-test-button"]')),
@@ -41,7 +41,7 @@ describe("Google Search", () => {
     await driver.wait(until.elementIsVisible(addTaskButton), 10000);
     await addTaskButton.click();
 
-    // const task = await driver.findElement(
+    //const task = await driver.findElement(
     //   By.css(`[data-testid="task-${newTask}"]`)
     // );
 
