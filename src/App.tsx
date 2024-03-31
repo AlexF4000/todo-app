@@ -27,6 +27,7 @@ const App: React.FC = () => {
       </Typography>
       <Paper style={{ padding: 16 }}>
         <TextField
+          data-testid="task-input"
           fullWidth
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -48,6 +49,7 @@ const App: React.FC = () => {
           {tasks.map((task, index) => (
             <ListItem
               key={index}
+              data-testid={`task-${task.title}`}
               secondaryAction={
                 <IconButton edge="end" onClick={() => deleteTask(index)}>
                   <Delete />
