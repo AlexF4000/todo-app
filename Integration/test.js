@@ -4,6 +4,8 @@ const { Builder, By, until } = require("selenium-webdriver");
 require("chromedriver");
 
 const INPUT_WRAPPER_LOCATOR = By.css('[data-testid="task-input"]');
+const newTask = "First task";
+const secondTask = "Second task";
 
 describe("TO DO List", () => {
   let driver;
@@ -13,7 +15,7 @@ describe("TO DO List", () => {
   });
 
   afterAll(async () => {
-    // await driver.quit();
+    await driver.quit();
   });
 
   test("should load todo app", async () => {
@@ -25,8 +27,6 @@ describe("TO DO List", () => {
   }, 30000);
 
   test("should add a new task via keyboard and verify its presence", async () => {
-    const newTask = "First task";
-
     const inputWrapper = await driver.wait(
       until.elementLocated(INPUT_WRAPPER_LOCATOR),
       10000
@@ -42,15 +42,13 @@ describe("TO DO List", () => {
   }, 30000);
 
   test("should add a new task via button and verify its presence", async () => {
-    const newTask = "Second task";
-
     const inputWrapper = await driver.wait(
       until.elementLocated(INPUT_WRAPPER_LOCATOR),
       10000
     );
     await driver.wait(until.elementIsVisible(inputWrapper), 10000);
     const input = await inputWrapper.findElement(By.css("input"));
-    await input.sendKeys(newTask);
+    await input.sendKeys(secondTask);
 
     const addTaskButton = await driver.wait(
       until.elementLocated(By.css('[data-testid="add-test-button"]')),
@@ -66,8 +64,6 @@ describe("TO DO List", () => {
   }, 30000);
 
   test("should toggle the task via checkbox and verify its presence", async () => {
-    const newTask = "First task";
-
     const taskItem = await driver.findElement(
       By.css(`[data-testid="task-${newTask}"]`)
     );
@@ -78,11 +74,10 @@ describe("TO DO List", () => {
   }, 30000);
 
   test("should delete the task via button and verify its absence", async () => {
-    const newTask = "Second task";
-
     const taskItem = await driver.findElement(
-      By.css(`[data-testid="task-${newTask}"]`)
+      By.css(`[data-testid="task-${secondTask}"]`)
     );
+
     const deleteButton = await taskItem.findElement(
       By.css(`[data-testid="delete-test-button"]`)
     );
@@ -90,17 +85,11 @@ describe("TO DO List", () => {
 
     await driver.sleep(1000);
 
-    let taskPresent;
-    try {
-      const task = await driver.findElement(
-        By.css(`[data-testid="task-${newTask}"]`)
-      );
+    const tasks = await driver.findElements(
+      By.css(`[data-testid="task-${secondTask}"]`)
+    );
 
-      taskPresent = true;
-    } catch (error) {
-      taskPresent = false;
-    }
-
+    const taskPresent = tasks.length > 0;
     expect(taskPresent).toBe(false);
   }, 30000);
 });
