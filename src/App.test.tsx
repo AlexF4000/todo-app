@@ -36,7 +36,8 @@ describe("App Component", () => {
     ) as HTMLInputElement;
 
     fireEvent.change(taskInput, { target: { value: "New Task" } });
-    expect(taskInput.value).toBe("New Task");
+
+    expect(taskInput.value).toBe("New Task"); // Verify input before adding
 
     const addButton = screen.getByTestId("add-test-button") as HTMLInputElement;
 

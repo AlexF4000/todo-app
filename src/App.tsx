@@ -18,11 +18,16 @@ const App: React.FC = () => {
 
   return (
     <Container maxWidth="sm">
-      <Typography variant="h2" sx={{ textAlign: "center", my: 4 }}>
+      <Typography
+        data-testid="todo-title"
+        variant="h2"
+        sx={{ textAlign: "center", my: 4 }}
+      >
         TODO LIST
       </Typography>
       <Paper style={{ padding: 16 }}>
         <TextField
+          data-testid="task-input"
           fullWidth
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -44,6 +49,7 @@ const App: React.FC = () => {
           {tasks.map((task, index) => (
             <ListItem
               key={index}
+              data-testid={`task-${task.title}`}
               secondaryAction={
                 <IconButton
                   data-testid="delete-test-button"
