@@ -13,7 +13,7 @@ describe("TO DO List", () => {
   });
 
   afterAll(async () => {
-    await driver.quit();
+    // await driver.quit();
   });
 
   test("should load todo app", async () => {
@@ -25,14 +25,14 @@ describe("TO DO List", () => {
   }, 30000);
 
   test("should add a new task via keyboard and verify its presence", async () => {
-    const newTask = 'First task';
+    const newTask = "First task";
 
     const inputWrapper = await driver.wait(
       until.elementLocated(INPUT_WRAPPER_LOCATOR),
       10000
     );
     await driver.wait(until.elementIsVisible(inputWrapper), 10000);
-    const input = await inputWrapper.findElement(By.css('input'));
+    const input = await inputWrapper.findElement(By.css("input"));
     await input.sendKeys(newTask, webdriver.Key.ENTER);
 
     const task = await driver.findElement(
@@ -41,16 +41,15 @@ describe("TO DO List", () => {
     expect(await task.getText()).toContain(newTask);
   }, 30000);
 
-
   test("should add a new task via button and verify its presence", async () => {
-    const newTask = 'Second task';
+    const newTask = "Second task";
 
     const inputWrapper = await driver.wait(
       until.elementLocated(INPUT_WRAPPER_LOCATOR),
       10000
     );
     await driver.wait(until.elementIsVisible(inputWrapper), 10000);
-    const input = await inputWrapper.findElement(By.css('input'));
+    const input = await inputWrapper.findElement(By.css("input"));
     await input.sendKeys(newTask);
 
     const addTaskButton = await driver.wait(
@@ -64,5 +63,44 @@ describe("TO DO List", () => {
       By.css(`[data-testid="task-${newTask}"]`)
     );
     expect(await task.getText()).toContain(newTask);
+  }, 30000);
+
+  test("should toggle the task via checkbox and verify its presence", async () => {
+    const newTask = "First task";
+
+    const taskItem = await driver.findElement(
+      By.css(`[data-testid="task-${newTask}"]`)
+    );
+    const taskCheckbox = await taskItem.findElement(
+      By.css("input[type='checkbox']")
+    );
+    await taskCheckbox.click();
+  }, 30000);
+
+  test("should delete the task via button and verify its absence", async () => {
+    const newTask = "Second task";
+
+    const taskItem = await driver.findElement(
+      By.css(`[data-testid="task-${newTask}"]`)
+    );
+    const deleteButton = await taskItem.findElement(
+      By.css(`[data-testid="delete-test-button"]`)
+    );
+    await deleteButton.click();
+
+    await driver.sleep(1000);
+
+    let taskPresent;
+    try {
+      const task = await driver.findElement(
+        By.css(`[data-testid="task-${newTask}"]`)
+      );
+
+      taskPresent = true;
+    } catch (error) {
+      taskPresent = false;
+    }
+
+    expect(taskPresent).toBe(false);
   }, 30000);
 });
