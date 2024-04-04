@@ -3,7 +3,9 @@ const { Builder, By, until } = require("selenium-webdriver");
 //const { Builder, By } = webdriver;
 require("chromedriver");
 
-describe("Google Search", () => {
+const INPUT_WRAPPER_LOCATOR = By.css('[data-testid="task-input"]');
+
+describe("TO DO List", () => {
   let driver;
 
   beforeAll(async () => {
@@ -14,7 +16,7 @@ describe("Google Search", () => {
     await driver.quit();
   });
 
-  test("should search for Selenium", async () => {
+  test("should load todo app", async () => {
     await driver.get("http://localhost:3000/");
     const titleEl = await driver.findElement(
       By.css('[data-testid="todo-title"]')
@@ -22,17 +24,34 @@ describe("Google Search", () => {
     expect(await titleEl.getText()).toBe("TODO LIST");
   }, 30000);
 
-  test("should add a new task and verify its presence", async () => {
-    const taskInput = await driver.wait(
-      until.elementLocated(By.css('[data-testid="task-input"]')),
+  test("should add a new task via keyboard and verify its presence", async () => {
+    const newTask = 'First task';
+
+    const inputWrapper = await driver.wait(
+      until.elementLocated(INPUT_WRAPPER_LOCATOR),
       10000
     );
-    await driver.wait(until.elementIsVisible(taskInput), 10000);
-    //await taskInput.sendKeys(newTask);
+    await driver.wait(until.elementIsVisible(inputWrapper), 10000);
+    const input = await inputWrapper.findElement(By.css('input'));
+    await input.sendKeys(newTask, webdriver.Key.ENTER);
 
-    //const newTask = "Finish selenium integration test";
-    //await taskInput.sendKeys(newTask);
-    //await addTaskButton.click();
+    const task = await driver.findElement(
+      By.css(`[data-testid="task-${newTask}"]`)
+    );
+    expect(await task.getText()).toContain(newTask);
+  }, 30000);
+
+
+  test("should add a new task via button and verify its presence", async () => {
+    const newTask = 'Second task';
+
+    const inputWrapper = await driver.wait(
+      until.elementLocated(INPUT_WRAPPER_LOCATOR),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(inputWrapper), 10000);
+    const input = await inputWrapper.findElement(By.css('input'));
+    await input.sendKeys(newTask);
 
     const addTaskButton = await driver.wait(
       until.elementLocated(By.css('[data-testid="add-test-button"]')),
@@ -41,12 +60,9 @@ describe("Google Search", () => {
     await driver.wait(until.elementIsVisible(addTaskButton), 10000);
     await addTaskButton.click();
 
-    //const task = await driver.findElement(
-    //   By.css(`[data-testid="task-${newTask}"]`)
-    // );
-
-    //const { Builder, By, until } = require("selenium-webdriver");
-
-    // expect(await task.getText()).toContain(newTask);
+    const task = await driver.findElement(
+      By.css(`[data-testid="task-${newTask}"]`)
+    );
+    expect(await task.getText()).toContain(newTask);
   }, 30000);
 });

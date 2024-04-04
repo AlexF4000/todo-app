@@ -27,8 +27,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test-integration": "jest integration/test.js ",
-    "eject": "react-scripts eject"
+    "test-integration": "jest integration/test.js",
+    "eject": "react-scripts eject",
+    "integration":"sh ./scripts/integration.sh"
   },
   "eslintConfig": {
     "extends": [
