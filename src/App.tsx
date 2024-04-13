@@ -23,7 +23,7 @@ const App: React.FC = () => {
         variant="h2"
         sx={{ textAlign: "center", my: 4 }}
       >
-        TODO LIST
+        My ToDo
       </Typography>
       <Paper style={{ padding: 16 }}>
         <TextField
