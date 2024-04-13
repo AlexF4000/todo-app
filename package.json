@@ -2,6 +2,7 @@
   "name": "todo-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://alexf4000.github.io/todo/",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -24,12 +25,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "deplay": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test-integration": "jest integration/test.js",
     "eject": "react-scripts eject",
-    "integration":"sh ./scripts/integration.sh"
+    "integration": "sh ./scripts/integration.sh"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "gh-pages": "^6.1.1"
   }
 }
